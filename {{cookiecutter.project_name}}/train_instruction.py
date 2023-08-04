@@ -3,6 +3,7 @@ import hydra
 import omegaconf
 import re
 import mlflow
+import sys
 
 
 def _clean_tags(tag: str) -> str:
@@ -10,7 +11,13 @@ def _clean_tags(tag: str) -> str:
 
 
 def _process_command_line_arguments():
-    import sys
+    """
+    Infers and processes the commandline arguments passed to the script.
+    Each commandline argument passed to hydra is decomposed into key and
+    value and return as a map.
+
+    :return: dictionary mapping from instruction key to overriden value
+    """
     argument_map = dict(instruction="default_instruction.yaml")
     for arg in sys.argv:
         _arg_split = arg.split("=")

@@ -1,4 +1,5 @@
 {
   "project_name": "sick-data-product-project",
-  "module_name": "data_product_project"
+  "module_name": "data_product_project",
+  "endpoint_name": "/v1/inference"
 }
