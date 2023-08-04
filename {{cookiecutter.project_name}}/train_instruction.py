@@ -5,6 +5,8 @@ import re
 import mlflow
 import sys
 
+import {{cookiecutter.module_name}}
+
 
 def _clean_tags(tag: str) -> str:
     return re.sub(r"[^a-zA-Z0-9._\-/ ]", "", tag)
@@ -38,6 +40,7 @@ def setup_mlflow(params: omegaconf.DictConfig):
 def log_run(params: omegaconf.DictConfig):
     override_instruction_arguments = _process_command_line_arguments()
     mlflow.set_tags(override_instruction_arguments)
+    mlflow.set_tag("version", {{cookiecutter.module_name}}.__version__)
     mlflow.log_dict(
         omegaconf.OmegaConf.to_container(params),
         "instruction.yaml"
