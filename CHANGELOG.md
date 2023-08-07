@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/sgerloff/data-product-kickstart-cookiecutter/compare/v1.0.0...v1.0.1) (2023-08-07)
+
+
+### Bug Fixes
+
+* simplify requirements management; new python module for repository specific python modules ([07fbc51](https://github.com/sgerloff/data-product-kickstart-cookiecutter/commit/07fbc5177fd18fc5399777a803a04223ddc86422))
+
 ## 1.0.0 (2023-08-04)
 
 
