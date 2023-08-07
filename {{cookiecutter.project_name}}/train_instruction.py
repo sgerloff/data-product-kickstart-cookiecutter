@@ -1,62 +1,28 @@
 import logging
 import hydra
 import omegaconf
-import re
-import mlflow
-import sys
 
 import {{cookiecutter.module_name}}
 
-
-def _clean_tags(tag: str) -> str:
-    return re.sub(r"[^a-zA-Z0-9._\-/ ]", "", tag)
+from script_utils import parse_overrides
 
 
-def _process_command_line_arguments():
-    """
-    Infers and processes the commandline arguments passed to the script.
-    Each commandline argument passed to hydra is decomposed into key and
-    value and return as a map.
 
-    :return: dictionary mapping from instruction key to overriden value
-    """
-    argument_map = dict(instruction="default_instruction.yaml")
-    for arg in sys.argv:
-        _arg_split = arg.split("=")
-        if not len(_arg_split) == 2:
-            continue
-        if _arg_split[0] == "--config-name":
-            _arg_split[0] = "instruction"
-
-        argument_map[_clean_tags(_arg_split[0])] = _arg_split[1].strip()
-    return argument_map
-
-
-def setup_mlflow(params: omegaconf.DictConfig):
-    mlflow.set_tracking_uri(params.mlflow_logger.tracking_uri)
-    mlflow.set_experiment(params.mlflow_logger.experiment)
-
-
-def log_run(params: omegaconf.DictConfig):
-    override_instruction_arguments = _process_command_line_arguments()
-    mlflow.set_tags(override_instruction_arguments)
-    mlflow.set_tag("version", {{cookiecutter.module_name}}.__version__)
-    mlflow.log_dict(
-        omegaconf.OmegaConf.to_container(params),
-        "instruction.yaml"
-    )
-
+def setup_mlflow_tags(params: omegaconf.DictConfig):
+    mlflow_tags = parse_overrides(params.hydra_overrides)
+    mlflow_tags["instruction"] = params.instruction_name
+    mlflow_tags["version"] = {{cookiecutter.module_name}}.__version__
+    return mlflow_tags
 
 @hydra.main(version_base=None,
             config_path="instruction",
             config_name="default_instruction.yaml")
 def main(params: omegaconf.DictConfig):
     logging.basicConfig(level=logging.INFO)
-    setup_mlflow(params)
-    with mlflow.start_run(run_name=params.mlflow_logger.run_name) as _:
-        log_run(params)
-        # Training can start ...
-        pass
+
+    mlflow_tags = setup_mlflow_tags(params)
+    # Training can start ...
+    pass
 
 
 if __name__ == "__main__":

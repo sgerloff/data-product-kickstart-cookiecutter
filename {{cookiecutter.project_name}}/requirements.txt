@@ -1,5 +1,5 @@
--r requirements_scripts.txt
--r requirements_notebooks.txt
+hydra-core>=1.0.0,<2.0.0
+mlflow>=2.0.0,<3.0.0
 -r requirements_module.txt
--r requirements_app.txt
 -r requirements_tests.txt
+-r requirements_app.txt
